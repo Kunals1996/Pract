@@ -1,69 +1,71 @@
-import csv
-import requests
-from urllib.request import urlretrieve
 import os
 import pandas as pd
-
-'''
-The Graph API is the primary way to get data into and out of the Facebook platform. 
-It's an HTTP-based API that apps can use to programmatically query data, post new stories, 
-manage ads, upload photos, and perform a wide variety of other tasks.
-'''
-
-'''
-An Access Token is a credential that can be used by an application to access an API. 
-Access Tokens can be either an opaque string or a JSON web token.
- Access Tokens should be used as a Bearer credential and transmitted in an HTTP Authorization header to the API.
-'''
-
-token = 'EAAg3lQGIA8UBAKZCIEwrxv1uydygtlVwSK9ipOdaZCq37OdGw1co80r3tszE5B5luJFGUbjER38TJiXRCiqQ0ZAzYEOOL8enTWeKZBIjKDNboDTG57OMI6XwliWmWDZAafefbBenJd0X55ncHwWBNFd9SSyX5mxx79YaOJ5ZBemOMeUtNkQFwsqZCjuy2pfA7jSEdJ1xTieQQZDZD'
+import requests
+from urllib.request import urlretrieve
 
 
 class FbData():
-    global token
 
+    token = 'EAAg3lQGIA8UBAKnhrMCmlRNsMKouWyZC51CotaEjyasCaTaIX9PIHuQIR1nhMocvLViBJGuIu51JkAqGlM9MfoF5CVSu3vAISE9IiI0FBqJKkJ78a8PHaSq46ZA98CSfxbTJmNtSKl0wKKfDlFjF4Tof0ZCZBJBhdcLcZBgZCVbC7V3elpBDGjdAoPOPumNP7rjR7WZBqDpTQZDZD'
 
     def get_photos(self):
-        csv_file = open('fbpics.csv', 'w')  # opens csv file in write mode
-        csv_writer = csv.writer(csv_file)  # a writer object to write on csv file
-        csv_writer.writerow(['Picture Link'])
-        photos = 'https://graph.facebook.com/v3.2/me?fields=photos{picture}&access_token='+token  #url that gives photos, their ids and links
-        RESULT = requests.get(photos)
-        RESULT = RESULT.json()  # Converted results to Dictionary format for extracting wanted data
-        length_of_list_wanted = len(RESULT['photos']['data'])  # Length of list in dict that containg links
-        for i in range(length_of_list_wanted):
-            csv_writer.writerow([RESULT['photos']['data'][i]['picture']])  # Writing links to csv file
-        csv_file.close()
+
+        """
+        Function that uses the graph api to get the links of the pictures and save them in csv file
+        :return: None
+        """
+
+        photos = 'https://graph.facebook.com/v3.2/me?fields=photos{picture}&access_token='+self.token  #url that gives photos, their ids and links
+        result = requests.get(photos)
+        result = result.json()  # Converted results to Dictionary format for extracting wanted data
+        df = pd.DataFrame(result['photos']['data'])
+        del df['id']
+        df.columns = ['Links']
+        df.to_csv('/home/nineleaps/PycharmProjects/Projectts/fbpics.csv', index=False)
         print('Done writing links')
 
+
     def get_created_time(self):
+
+        """
+        Uses the graph api to get the created time of pictures and save them in the csv file
+        :return:None
+        """
+
         location_of_csv_file = '/home/nineleaps/PycharmProjects/Projectts/fbpics.csv'
-        df = pd.read_csv(location_of_csv_file)  # Reading csv file using pandas and creating data frame
+        df = pd.read_csv(location_of_csv_file)
         list_of_created_time = []
-        status = 'https://graph.facebook.com/v3.2/me?fields=photos{created_time}&access_token='+token  # Url that gives created time of pics
-        RESULT = requests.get(status)
-        RESULT = RESULT.json()
-        l = len(RESULT['photos']['data'])
+        status = 'https://graph.facebook.com/v3.2/me?fields=photos{created_time}&access_token='+self.token
+        result = requests.get(status)
+        result = result.json()
+        l = len(result['photos']['data'])
         for i in range(l):
-            list_of_created_time.append(RESULT['photos']['data'][i]['created_time'])
+            list_of_created_time.append(result['photos']['data'][i]['created_time'])
         df['Created Time'] = list_of_created_time
-        df.to_csv(location_of_csv_file, index=False)  # Converting data frame to csv on wanted location
+        df.to_csv(location_of_csv_file, index=False)
         print("Done writing created time of pics")
 
+
     def download_images(self):
+
+        """
+        Reads the csv file and downloads the images from stored links to specified folder
+        :return:None
+        """
+
         location_of_csv_file  = '/home/nineleaps/PycharmProjects/Projectts/fbpics.csv'
         df = pd.read_csv(location_of_csv_file)
         path_to_save_pictures = '/home/nineleaps/PycharmProjects/Projectts/photos'
-        if os.path.exists(path_to_save_pictures): # If a folder for saving pic already exists, deletes it
+        if os.path.exists(path_to_save_pictures):
             os.rmdir('photos')
-        os.makedirs('photos')  # Makes a folder with name 'photos' to save pictues
+        os.makedirs('photos')
         links = list((df['Picture Link']))
         i = 0
         for link in links:
-            urlretrieve(link, path_to_save_pictures + '/image' + str(i) + '.jpg')  # Retrieving images from urls
+            urlretrieve(link, path_to_save_pictures + '/image' + str(i) + '.jpg')
             i+=1
 
-        os.chdir('/home/nineleaps/PycharmProjects/Projectts')  #Going back from folder of saved pics (this step is not necessary)
+        os.chdir('/home/nineleaps/PycharmProjects/Projectts')
         print('Downloaded Images')
 
 ob1 = FbData()
