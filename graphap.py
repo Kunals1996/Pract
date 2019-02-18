@@ -6,7 +6,7 @@ from urllib.request import urlretrieve
 
 class FbData():
 
-    token = 'EAAg3lQGIA8UBAKnhrMCmlRNsMKouWyZC51CotaEjyasCaTaIX9PIHuQIR1nhMocvLViBJGuIu51JkAqGlM9MfoF5CVSu3vAISE9IiI0FBqJKkJ78a8PHaSq46ZA98CSfxbTJmNtSKl0wKKfDlFjF4Tof0ZCZBJBhdcLcZBgZCVbC7V3elpBDGjdAoPOPumNP7rjR7WZBqDpTQZDZD'
+    token = 'BqJKkJ78a8PHaSq46ZA98CSfxbTJmNtSKl0wKKfDlFjF4Tof0ZCZBJBhdcLcZBgZCVbC7V3elpBDGjdAoPOPumNP7rjR7WZBqDpTQZDZD'
 
     def get_photos(self):
 
