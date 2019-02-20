@@ -6,7 +6,7 @@ from urllib.request import urlretrieve
 
 class FbData():
 
-    token = 'EAAg3lQGIA8UBAKnhrMCmlRNsMKouWyZC51CotaEjyasCaTaIX9PIHuQIR1nhMocvLViBJGuIu51JkAqGlM9MfoF5CVSu3vAISE9IiI0FBqJKkJ78a8PHaSq46ZA98CSfxbTJmNtSKl0wKKfDlFjF4Tof0ZCZBJBhdcLcZBgZCVbC7V3elpBDGjdAoPOPumNP7rjR7WZBqDpTQZDZD'
+    token = 'BqJKkJ78a8PHaSq46ZA98CSfxbTJmNtSKl0wKKfDlFjF4Tof0ZCZBJBhdcLcZBgZCVbC7V3elpBDGjdAoPOPumNP7rjR7WZBqDpTQZDZD'
 
     def get_photos(self):
 
@@ -21,7 +21,7 @@ class FbData():
         df = pd.DataFrame(result['photos']['data'])
         del df['id']
         df.columns = ['Links']
-        df.to_csv('/home/nineleaps/PycharmProjects/Projectts/fbpics.csv', index=False)
+        df.to_csv('location_to_save/abc.csv', index=False)
         print('Done writing links')
 
 
@@ -32,7 +32,7 @@ class FbData():
         :return:None
         """
 
-        location_of_csv_file = '/home/nineleaps/PycharmProjects/Projectts/fbpics.csv'
+        location_of_csv_file = 'location'
         df = pd.read_csv(location_of_csv_file)
         list_of_created_time = []
         status = 'https://graph.facebook.com/v3.2/me?fields=photos{created_time}&access_token='+self.token
@@ -53,9 +53,9 @@ class FbData():
         :return:None
         """
 
-        location_of_csv_file  = '/home/nineleaps/PycharmProjects/Projectts/fbpics.csv'
+        location_of_csv_file  = 'location'
         df = pd.read_csv(location_of_csv_file)
-        path_to_save_pictures = '/home/nineleaps/PycharmProjects/Projectts/photos'
+        path_to_save_pictures = 'location_of_folder'
         if os.path.exists(path_to_save_pictures):
             os.rmdir('photos')
         os.makedirs('photos')
